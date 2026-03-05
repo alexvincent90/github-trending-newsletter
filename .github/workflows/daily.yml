@@ -1,0 +1,26 @@
+name: Send GitHub Trending Newsletter
+
+on:
+  schedule:
+    - cron: '30 14 * * *'   # 7:30 AM US Pacific daily
+  workflow_dispatch:
+
+jobs:
+  send-newsletter:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Run newsletter
+        env:
+          ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
+          RESEND_API_KEY:     ${{ secrets.RESEND_API_KEY }}
+          FROM_EMAIL:         "trending@naviwork.tools"
+          FROM_NAME:          "GitHub Trending Daily"
+          TOP_N:              "8"
+        run: python main.py

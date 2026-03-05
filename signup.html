@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub Trending Daily — Subscribe</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#f6f8fa; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
+    .card { background:white; border-radius:16px; padding:48px 40px; max-width:480px; width:100%; box-shadow:0 4px 24px rgba(0,0,0,.08); text-align:center; }
+    .logo { font-size:40px; margin-bottom:16px; }
+    h1 { font-size:28px; font-weight:800; color:#24292e; margin-bottom:10px; }
+    .tagline { font-size:16px; color:#666; line-height:1.5; margin-bottom:32px; }
+    .bullets { text-align:left; margin-bottom:32px; }
+    .bullets li { font-size:14px; color:#444; margin-bottom:8px; list-style:none; padding-left:24px; position:relative; }
+    .bullets li::before { content:'✓'; position:absolute; left:0; color:#0366d6; font-weight:700; }
+    input[type="email"] { width:100%; padding:14px 16px; border:2px solid #eee; border-radius:10px; font-size:16px; margin-bottom:12px; outline:none; transition:border .2s; }
+    input[type="email"]:focus { border-color:#0366d6; }
+    button { width:100%; padding:14px; background:#0366d6; color:white; border:none; border-radius:10px; font-size:16px; font-weight:700; cursor:pointer; transition:background .2s; }
+    button:hover { background:#0256b3; }
+    .fine-print { font-size:11px; color:#bbb; margin-top:14px; }
+    .success { display:none; color:#22c55e; font-weight:600; font-size:16px; margin-top:16px; }
+    .error-msg { display:none; color:#ef4444; font-size:13px; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">⭐</div>
+    <h1>GitHub Trending Daily</h1>
+    <p class="tagline">The repos everyone's starring today, with a one-line reason why you should care.</p>
+    <ul class="bullets">
+      <li>Top 8 trending repos every morning</li>
+      <li>Language, star count, and AI-written context</li>
+      <li>Free forever — developers only, no fluff</li>
+    </ul>
+    <form id="signup-form">
+      <input type="email" id="email-input" placeholder="you@example.com" required>
+      <button type="submit">Subscribe Free →</button>
+      <div class="error-msg" id="error-msg"></div>
+    </form>
+    <div class="success" id="success-msg">🎉 You're in! First email arrives tomorrow morning.</div>
+    <p class="fine-print">For developers who want to stay sharp. Unsubscribe anytime.</p>
+  </div>
+  <script>
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email-input').value.trim();
+      const btn = e.target.querySelector('button');
+      const errEl = document.getElementById('error-msg');
+      btn.textContent = 'Subscribing…'; btn.disabled = true; errEl.style.display = 'none';
+      try {
+        const res = await fetch('/.netlify/functions/subscribe', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email}) });
+        const data = await res.json();
+        if (res.ok) { document.getElementById('signup-form').style.display='none'; document.getElementById('success-msg').style.display='block'; }
+        else { errEl.textContent = data.error || 'Something went wrong.'; errEl.style.display='block'; btn.textContent='Subscribe Free →'; btn.disabled=false; }
+      } catch { errEl.textContent='Network error.'; errEl.style.display='block'; btn.textContent='Subscribe Free →'; btn.disabled=false; }
+    });
+  </script>
+</body>
+</html>
