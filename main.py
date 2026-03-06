@@ -1,5 +1,5 @@
 """
-GitHub Trending Newsletter â main.py
+GitHub Trending Newsletter Ã¢ÂÂ main.py
 Scrapes github.com/trending, summarizes with Claude, sends via Resend.
 Run daily via GitHub Actions cron.
 """
@@ -23,7 +23,7 @@ FROM_NAME           = os.environ.get("FROM_NAME", "GitHub Trending Daily")
 TOP_N               = int(os.environ.get("TOP_N", "8"))
 
 
-# ââ 1. Scrape github.com/trending âââââââââââââââââââââââââââââââââââââââââââââ
+# Ã¢ÂÂÃ¢ÂÂ 1. Scrape github.com/trending Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
 def fetch_trending(n: int = 8) -> list[dict]:
     """Scrape GitHub trending page. GitHub is scraper-friendly (no CAPTCHA on /trending)."""
     headers = {
@@ -65,7 +65,7 @@ def fetch_trending(n: int = 8) -> list[dict]:
         # Stars today
         stars_today_el = article.select_one("span.d-inline-block.float-sm-right")
         stars_today = stars_today_el.get_text(strip=True) if stars_today_el else "?"
-        # Clean up: "123 stars today" â "123"
+        # Clean up: "123 stars today" Ã¢ÂÂ "123"
         stars_today = stars_today.replace("stars today", "").replace(",", "").strip()
 
         repos.append({
@@ -83,7 +83,7 @@ def fetch_trending(n: int = 8) -> list[dict]:
     return repos
 
 
-# ââ 2. Summarize with Claude âââââââââââââââââââââââââââââââââââââââââââââââââââ
+# Ã¢ÂÂÃ¢ÂÂ 2. Summarize with Claude Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
 def summarize_repos(repos: list[dict]) -> list[dict]:
     client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
@@ -119,7 +119,7 @@ def summarize_repos(repos: list[dict]) -> list[dict]:
     return repos
 
 
-# ââ 3. Build email âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# Ã¢ÂÂÃ¢ÂÂ 3. Build email Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
 LANG_COLORS = {
     "Python": "#3572A5", "JavaScript": "#f1e05a", "TypeScript": "#2b7489",
     "Go": "#00ADD8", "Rust": "#dea584", "Java": "#b07219", "C++": "#f34b7d",
@@ -135,14 +135,14 @@ def lang_badge(lang: str) -> str:
     )
 
 def build_email(repos: list[dict], date_str: str) -> tuple[str, str]:
-    subject = f"â­ GitHub Trending â {date_str}: {repos[0]['name']} and {len(repos)-1} more"
+    subject = f"Ã¢Â­Â GitHub Trending Ã¢ÂÂ {date_str}: {repos[0]['name']} and {len(repos)-1} more"
 
     items_html = ""
     for i, r in enumerate(repos, 1):
         items_html += f"""
         <div style="margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid #f4f4f4">
           <div style="font-size:11px;color:#aaa;margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px">
-            #{i} &nbsp;Â·&nbsp; â­ {r['stars_today']} stars today
+            #{i} &nbsp;ÃÂ·&nbsp; Ã¢Â­Â {r['stars_today']} stars today
           </div>
           <div style="font-size:17px;font-weight:700;margin-bottom:4px">
             <a href="{r['url']}" style="color:#0366d6;text-decoration:none">{r['full']}</a>
@@ -150,7 +150,7 @@ def build_email(repos: list[dict], date_str: str) -> tuple[str, str]:
           <div style="margin-bottom:6px">{lang_badge(r['language'])}</div>
           <div style="font-size:14px;color:#555;line-height:1.5;margin-bottom:7px">{r.get('summary', r['description'])}</div>
           <a href="{r['url']}" style="font-size:12px;color:#0366d6;font-weight:600;text-decoration:none">
-            View on GitHub â
+            View on GitHub Ã¢ÂÂ
           </a>
         </div>"""
 
@@ -161,8 +161,8 @@ def build_email(repos: list[dict], date_str: str) -> tuple[str, str]:
   <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:30px">
     <tr>
       <td>
-        <span style="font-size:22px;font-weight:800;color:#24292e">â­ GitHub Trending</span>
-        <div style="font-size:13px;color:#888;margin-top:3px">{date_str} &nbsp;Â·&nbsp; Top {len(repos)} repos blowing up today</div>
+        <span style="font-size:22px;font-weight:800;color:#24292e">Ã¢Â­Â GitHub Trending</span>
+        <div style="font-size:13px;color:#888;margin-top:3px">{date_str} &nbsp;ÃÂ·&nbsp; Top {len(repos)} repos blowing up today</div>
       </td>
     </tr>
   </table>
@@ -177,7 +177,7 @@ def build_email(repos: list[dict], date_str: str) -> tuple[str, str]:
     return subject, html
 
 
-# ââ 4 & 5. Subscribers + Send (same helpers as HN digest) ââââââââââââââââââââ
+# Ã¢ÂÂÃ¢ÂÂ 4 & 5. Subscribers + Send (same helpers as HN digest) Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
 def get_audience_id() -> str:
     r = requests.get(
         "https://api.resend.com/audiences",
@@ -200,10 +200,12 @@ def get_subscribers() -> list[str]:
 def send_digest(subject: str, html: str, subscribers: list[str]) -> None:
     resend.api_key = RESEND_API_KEY
     if not subscribers:
-        log.warning("No subscribers â sending test to FROM_EMAIL")
+        log.warning("No subscribers Ã¢ÂÂ sending test to FROM_EMAIL")
         subscribers = [FROM_EMAIL]
-    # Send individually to respect Resend's 2 req/sec rate limit
+    # Allow rate limit window to reset after audience/contacts API calls
     import time
+    time.sleep(1)
+    # Send individually to respect Resend's 2 req/sec rate limit
     for i, email in enumerate(subscribers):
         params = resend.Emails.SendParams(
             from_=f"{FROM_NAME} <{FROM_EMAIL}>",
@@ -212,24 +214,24 @@ def send_digest(subject: str, html: str, subscribers: list[str]) -> None:
             html=html,
         )
         result = resend.Emails.send(params)
-        log.info("Sent to %s — id=%s", email, result.get("id"))
+        log.info("Sent to %s â id=%s", email, result.get("id"))
         if i < len(subscribers) - 1:
             time.sleep(0.6)
 
 
-# ââ Entrypoint âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# Ã¢ÂÂÃ¢ÂÂ Entrypoint Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
 def main():
     date_str = datetime.now(timezone.utc).strftime("%B %-d, %Y")
     log.info("Starting GitHub Trending Newsletter for %s", date_str)
     try:
         repos = fetch_trending(TOP_N)
         if not repos:
-            raise ValueError("No trending repos found â GitHub may have changed their HTML structure")
+            raise ValueError("No trending repos found Ã¢ÂÂ GitHub may have changed their HTML structure")
         repos = summarize_repos(repos)
         subject, html = build_email(repos, date_str)
         subscribers = get_subscribers()
         send_digest(subject, html, subscribers)
-        log.info("Done â")
+        log.info("Done Ã¢ÂÂ")
     except Exception as e:
         log.exception("Fatal: %s", e)
         raise
