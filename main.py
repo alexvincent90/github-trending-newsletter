@@ -198,14 +198,14 @@ def get_subscribers() -> list[str]:
 
 
 def send_digest(subject: str, html: str, subscribers: list[str]) -> None:
+    import time
     resend.api_key = RESEND_API_KEY
     if not subscribers:
-        log.warning("No subscribers Ã¢ÂÂ sending test to FROM_EMAIL")
+        log.warning("No subscribers — sending test to FROM_EMAIL")
         subscribers = [FROM_EMAIL]
-    # Allow rate limit window to reset after audience/contacts API calls
-    import time
+
+    # Wait 1s to avoid Resend rate limit after audience/contacts API calls
     time.sleep(1)
-    # Send individually to respect Resend's 2 req/sec rate limit
     for i, email in enumerate(subscribers):
         params = resend.Emails.SendParams(
             from_=f"{FROM_NAME} <{FROM_EMAIL}>",
@@ -214,7 +214,7 @@ def send_digest(subject: str, html: str, subscribers: list[str]) -> None:
             html=html,
         )
         result = resend.Emails.send(params)
-        log.info("Sent to %s â id=%s", email, result.get("id"))
+        log.info("Sent to %s", email)
         if i < len(subscribers) - 1:
             time.sleep(0.6)
 
