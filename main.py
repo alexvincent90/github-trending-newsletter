@@ -207,12 +207,12 @@ def send_digest(subject: str, html: str, subscribers: list[str]) -> None:
     # Wait 1s to avoid Resend rate limit after audience/contacts API calls
     time.sleep(1)
     for i, email in enumerate(subscribers):
-        params = resend.Emails.SendParams(
-            from_=f"{FROM_NAME} <{FROM_EMAIL}>",
-            to=[email],
-            subject=subject,
-            html=html,
-        )
+        params: resend.Emails.SendParams = {
+            "from": f"{FROM_NAME} <{FROM_EMAIL}>",
+            "to": [email],
+            "subject": subject,
+            "html": html,
+        }
         result = resend.Emails.send(params)
         log.info("Sent to %s", email)
         if i < len(subscribers) - 1:
